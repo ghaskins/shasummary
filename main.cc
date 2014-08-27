@@ -142,10 +142,17 @@ Sha loadSha(fs::path path)
   return sha;
 }
 
+void storeSha(fs::path path, const Sha &sha)
+{
+  std::ofstream os(path.string().c_str());
+
+  os << sha;
+}
+
 class Directory
 {
 public:
-  Directory(fs::path path)
+  Directory(fs::path path) : m_path(path)
   {
     for (fs::directory_iterator end, iter(path); iter != end; ++iter)
       {
@@ -166,7 +173,7 @@ public:
 
   void verify()
   {
-    fs::path metadir(METADIR);
+    fs::path metadir(m_path / METADIR);
     std::set<std::string> files;
 
     for (auto iter : m_files)
@@ -204,11 +211,44 @@ public:
 
   void generate()
   {
+    fs::path metadir(m_path / METADIR);
+    std::set<std::string> files;
+
+    fs::create_directory(metadir);
+
     for (auto iter : m_files)
       {
+	fs::path metafile(metadir / iter->filename());
 
+	if (fs::exists(metafile))
+	  {
+	    if (loadSha(metafile) != iter->sha())
+	      {
+		std::cout << "U\t" <<  *iter << std::endl;
+		storeSha(metafile, iter->sha());
+	      }
+	  }
+	else
+	  {
+	    std::cout << "C\t" <<  *iter << std::endl;
+	    storeSha(metafile, iter->sha());
+	  }
+
+	files.insert(iter->filename().string());
       }
 
+    for (fs::directory_iterator end, iter(metadir); iter != end; ++iter)
+      {
+	fs::directory_entry entry(*iter);
+	fs::path p(entry.path());
+	
+	if (files.find(p.filename().string()) == files.end())
+	  {
+	    std::cout << "D\t" <<  *iter << std::endl;
+	    fs::remove(p);
+	  }
+      }
+    
     for (auto iter : m_subdirs)
       iter.generate();
   }
@@ -217,6 +257,7 @@ private:
   typedef std::list<Directory> Directories;
   typedef std::list<File::Ptr>  Files;
 
+  fs::path    m_path;
   Directories m_subdirs;
   Files       m_files;
 };

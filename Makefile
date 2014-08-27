@@ -47,9 +47,9 @@ $(OBJDIR)/%:
 	$(CXX) $(CFLAGS) $(INCLUDES) -o $@ $(filter %.o %.a,$+) $(LIBDIR) $(LIBRARIES)
 
 $(TESTDIR)/%.dat: Makefile
-	@echo "Compiling (C++) $< to $@"
+	@echo "Generating test data $@"
 	@mkdir -p $(TESTDIR)
-	uuidgen > $@
+	@uuidgen > $@
 
 $(PREFIX)$(BINDIR):
 	mkdir -p $@
