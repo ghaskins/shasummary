@@ -24,6 +24,7 @@ public:
   ThreadPool()
   {
     int concurrency(boost::thread::hardware_concurrency());
+
     std::cerr << "Using " << concurrency << " threads" << std::endl;
 
     for (int i(0); i<concurrency; i++)
@@ -66,7 +67,7 @@ private:
   typedef boost::mutex              Mutex;
   typedef boost::unique_lock<Mutex> Lock;
   typedef boost::condition_variable Condition;
-  typedef std::queue<TaskPtr>          Tasks;
+  typedef std::queue<TaskPtr>       Tasks;
 
   boost::thread_group m_tg;
   Mutex               m_mutex;
@@ -91,14 +92,21 @@ public:
 			    char                          buf[4096];
 			    std::streamsize               len;
 			    
-			    //while ((len = is.read(buf, sizeof(buf))))
-			    //sha1.process_bytes(buf, len);
+			    while ((len = is.read(buf, sizeof(buf))) > 0)
+			      sha1.process_bytes(buf, len);
 			    
 			    unsigned int digest[5];
 			    
 			    sha1.get_digest(digest);
-			    
-			    return "sha";
+
+			    std::ostringstream os;
+
+			    os << std::hex << std::setfill('0') << std::setw(sizeof(int)*2);
+			    for(std::size_t i=0; i<sizeof(digest)/sizeof(digest[0]); ++i) {
+			      os << digest[i];
+			    }
+
+			    return os.str();
 			  }
 			  )
 		 );
