@@ -130,6 +130,18 @@ private:
   Future m_future;
 };
 
+#define METADIR ".verisum"
+
+Sha loadSha(fs::path path)
+{
+  std::ifstream is(path.string().c_str());
+  Sha sha;
+
+  is >> sha;
+
+  return sha;
+}
+
 class Directory
 {
 public:
@@ -140,7 +152,7 @@ public:
 	fs::directory_entry entry(*iter);
 	fs::path p(entry.path());
 
-	if (p.filename() == ".verisum")
+	if (p.filename() == METADIR)
 	  continue;
 
 	if (fs::is_directory(p))
@@ -154,9 +166,36 @@ public:
 
   void verify()
   {
+    fs::path metadir(METADIR);
+    std::set<std::string> files;
+
     for (auto iter : m_files)
       {
-	std::cout << "Verify " << *iter << "=" << iter->sha() << std::endl;
+	fs::path metafile(metadir / iter->filename());
+
+	if (fs::exists(metafile))
+	  {
+	    if (loadSha(metafile) != iter->sha())
+	      std::cout << "U\t" <<  *iter << std::endl;
+	  }
+	else
+	  {
+	    std::cout << "C\t" <<  *iter << std::endl;
+	  }
+
+	files.insert(iter->filename().string());
+      }
+
+    if (fs::exists(metadir))
+      {
+	for (fs::directory_iterator end, iter(metadir); iter != end; ++iter)
+	  {
+	    fs::directory_entry entry(*iter);
+	    fs::path p(entry.path());
+	    
+	    if (files.find(p.filename().string()) == files.end())
+	      std::cout << "D\t" <<  *iter << std::endl;
+	  }
       }
 
     for (auto iter : m_subdirs)
@@ -218,7 +257,7 @@ int main(int argc, char **argv)
   if (vm.count("generate"))
       generate = true;
 
-  std::cout << (generate ? "Generating" : "Verifying") << " sums in " << path << std::endl;
+  std::cerr << (generate ? "Generating" : "Verifying") << " sums in " << path << std::endl;
 
   Directory root(path);
 
