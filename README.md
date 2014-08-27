@@ -53,7 +53,7 @@ C       "./obj/test/foo2.dat"
 C       "./obj/test/foo3.dat"
 C       "./obj/test/foo4.dat"
 ```
-The tool outputs the files that it discovered, prefixed with one of "C", "U", or "D" representing files that are "C"reated, "U"dated, or "D"deleted since we last ran.  In this case, we have never run the tool so all files are considered new.
+The tool outputs the files that it discovered, prefixed with one of "C", "U", or "D" representing files that are Created, Udated, or Deleted, respectively, since we last ran.  In this case, we have never run the tool so all files are considered new.
 
 Generate our metadata with "--generate"
 ====
@@ -87,7 +87,7 @@ Using 8 threads
 Verifying sums in "./obj/test/"
 D       "./obj/test/foo1.dat"
 ```
-Note that the deleted file is flaged as "D".
+Note that the deleted file is flagged as "D".
 
 Next, change an existing file
 =====
