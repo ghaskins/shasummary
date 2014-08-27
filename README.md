@@ -94,7 +94,6 @@ Next, change an existing file
 ```
 greg:shasummary ghaskins$ uuidgen > ./obj/test/foo2.dat 
 greg:shasummary ghaskins$ ./obj/x86_64/shasummary ./obj/test/
-Checkpoint
 Using 8 threads
 Verifying sums in "./obj/test/"
 U       "./obj/test/foo2.dat"
