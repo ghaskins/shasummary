@@ -21,22 +21,16 @@ typedef boost::shared_ptr<Task> TaskPtr;
 class ThreadPool
 {
 public:
-  ThreadPool()
-  {
-    int concurrency(boost::thread::hardware_concurrency());
-
-    std::cerr << "Using " << concurrency << " threads" << std::endl;
-
-    for (int i(0); i<concurrency; i++)
-      {
-	m_tg.create_thread(boost::bind(&ThreadPool::worker, this));
-      }
-  }
-
   ~ThreadPool()
   {
     m_tg.interrupt_all();
     m_tg.join_all();
+  }
+
+  void set_concurrency(unsigned int concurrency)
+  {
+    for (int i(0); i<concurrency; i++)
+      m_tg.create_thread(boost::bind(&ThreadPool::worker, this));
   }
 
   void post(TaskPtr task)
@@ -272,12 +266,15 @@ int main(int argc, char **argv)
   int ret;
   fs::path path(fs::current_path());
   bool generate(false);
+  unsigned int concurrency(boost::thread::hardware_concurrency());
 
   po::options_description desc("Allowed options");
   desc.add_options()
     ("help,h", "produces help message")
     ("path,p", po::value<fs::path>(&path),
      "path to tree (defaults to $CWD)")
+    ("threads,t", po::value<unsigned int>(&concurrency),
+     "the number of threads to use for SHA1 computations (default: # of logical cores)")
     ("generate", "generate sums")
     ;
 
@@ -303,7 +300,11 @@ int main(int argc, char **argv)
   if (vm.count("generate"))
       generate = true;
 
-  std::cerr << (generate ? "Generating" : "Verifying") << " sums in " << path << std::endl;
+  std::cerr << (generate ? "Generating" : "Verifying") << " sums in " << path
+	    << " using " << concurrency << " threads"
+	    << std::endl;
+
+  _pool.set_concurrency(concurrency);
 
   Directory root(path);
 
