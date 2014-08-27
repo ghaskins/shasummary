@@ -1,6 +1,6 @@
 NAME=verisum
 
-CFLAGS += -g -O3 -DBOOST_FILESYSTEM_VERSION=3 $(EXTRA_CFLAGS)
+CFLAGS += -g -O3 --std=c++11 -DBOOST_FILESYSTEM_VERSION=3 $(EXTRA_CFLAGS)
 ARCH=$(shell uname -m)
 OS:=$(shell uname)
 BINDIR ?= /usr/bin
@@ -14,6 +14,7 @@ endif
 LIBRARIES += -lboost_program_options$(BOOST_POSTFIX)
 LIBRARIES += -lboost_filesystem$(BOOST_POSTFIX)
 LIBRARIES += -lboost_system$(BOOST_POSTFIX)
+LIBRARIES += -lboost_thread$(BOOST_POSTFIX)
 
 SRCS += $(wildcard *.cc)
 HDRS += $(wildcard *.hh)
