@@ -136,7 +136,7 @@ private:
 
 #define METADIR ".shasummary"
 
-Sha loadSha(fs::path path)
+Sha load_sha(fs::path path)
 {
   std::ifstream is(path.string().c_str());
   Sha sha;
@@ -146,7 +146,7 @@ Sha loadSha(fs::path path)
   return sha;
 }
 
-void storeSha(fs::path path, const Sha &sha)
+void store_sha(fs::path path, const Sha &sha)
 {
   std::ofstream os(path.string().c_str());
 
@@ -187,7 +187,7 @@ public:
 
 	if (fs::exists(metafile))
 	  {
-	    if (loadSha(metafile) != sha)
+	    if (load_sha(metafile) != sha)
 	      std::cout << "U\t" <<  *iter << std::endl;
 	  }
 	else
@@ -227,16 +227,16 @@ public:
 
 	if (fs::exists(metafile))
 	  {
-	    if (loadSha(metafile) != iter->sha())
+	    if (load_sha(metafile) != iter->sha())
 	      {
 		std::cout << "U\t" <<  *iter << std::endl;
-		storeSha(metafile, iter->sha());
+		store_sha(metafile, iter->sha());
 	      }
 	  }
 	else
 	  {
 	    std::cout << "C\t" <<  *iter << std::endl;
-	    storeSha(metafile, iter->sha());
+	    store_sha(metafile, iter->sha());
 	  }
 
 	files.insert(iter->filename().string());
