@@ -92,8 +92,6 @@ Note that the deleted file is flaged as "D".
 Next, change an existing file
 =====
 ```
-greg:shasummary ghaskins$ uuidgen > ./obj/
-test/   x86_64/ 
 greg:shasummary ghaskins$ uuidgen > ./obj/test/foo2.dat 
 greg:shasummary ghaskins$ ./obj/x86_64/shasummary ./obj/test/
 Checkpoint
