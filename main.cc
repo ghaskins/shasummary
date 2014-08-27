@@ -20,7 +20,7 @@ public:
 
   File(fs::path path) : fs::path(path)
   {
-    m_future = boost::async(boost::launch::async,
+    m_future = boost::async(boost::launch::deferred,
 			    [path]()->Sha
 			    {
 			      using boost::uuids::detail::sha1;

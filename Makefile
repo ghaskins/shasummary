@@ -1,6 +1,6 @@
 NAME=verisum
 
-CFLAGS += -g -O3 --std=c++11 -DBOOST_FILESYSTEM_VERSION=3 $(EXTRA_CFLAGS)
+CFLAGS += -g --std=c++11 -DBOOST_FILESYSTEM_VERSION=3 $(EXTRA_CFLAGS)
 ARCH=$(shell uname -m)
 OS:=$(shell uname)
 BINDIR ?= /usr/bin
