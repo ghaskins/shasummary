@@ -1,5 +1,5 @@
 shasummary - A filesystem integrity validation tool
-==========
+=
 
 This tool allows you to monitor the integrity of a filesystem based on SHA1 sums.  It is designed to operate in
 two modes: generation and verification.  Generation mode will emit SHA1 metadata into a hidden sub-directory.
@@ -9,12 +9,12 @@ metadata and report on any differences (files added, removed, or changed) since 
 This is particularly helpful for ensuring that a filesystem backup remains coherent over time.
 
 Usage
-==========
+==
 
 
 Example
-==========
-
+==
+```
 greg:shasummary ghaskins$ make
 Compiling (C++) main.cc to obj/x86_64/main.o
 c++ -g --std=c++11 -DBOOST_FILESYSTEM_VERSION=3   -c -o obj/x86_64/main.o main.cc
@@ -74,3 +74,4 @@ D       "./obj/test/foo1.dat"
 greg:shasummary ghaskins$ ./obj/x86_64/shasummary ./obj/test/
 Using 8 threads
 Verifying sums in "./obj/test/"
+```
