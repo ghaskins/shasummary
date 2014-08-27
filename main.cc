@@ -183,10 +183,11 @@ public:
     for (auto iter : m_files)
       {
 	fs::path metafile(metadir / iter->filename());
+	Sha sha(iter->sha());
 
 	if (fs::exists(metafile))
 	  {
-	    if (loadSha(metafile) != iter->sha())
+	    if (loadSha(metafile) != sha)
 	      std::cout << "U\t" <<  *iter << std::endl;
 	  }
 	else
