@@ -53,11 +53,11 @@ C       "./obj/test/foo2.dat"
 C       "./obj/test/foo3.dat"
 C       "./obj/test/foo4.dat"
 ```
-The tool outputs the files that it discovered, prefixed with one of "C", "U", or "D" representing files that are Created, Udated, or Deleted, respectively, since we last ran.  In this case, we have never run the tool so all files are considered new.
+The tool outputs the files that it discovered, prefixed with one of "C", "U", or "D" representing files that are Created, Updated, or Deleted, respectively, since we last ran.  In this case, we have never run the tool so all files are considered new.
 
 Generate our metadata with "--generate"
 ====
-**CAUTION: Running the generator will modify the filesystem.  Hidden directories (.shasummary) are created in each subdirectory being scaned to hold the SHA1 metadata**
+**CAUTION: Running the generator will modify the filesystem.  Hidden directories (.shasummary) are created in each subdirectory being scanned to hold the SHA1 metadata**
 ```
 greg:shasummary ghaskins$ ./obj/x86_64/shasummary --generate ./obj/test/
 Using 8 threads
