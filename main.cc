@@ -6,16 +6,13 @@
 #include <boost/thread.hpp>
 #include <boost/thread/future.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/uuid/sha1.hpp>
+#include <boost/iostreams/device/file.hpp>
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 
 typedef std::string Sha;
-
-Sha computeSha(fs::path path)
-{
-  return "sha";
-}
 
 class File : public fs::path
 {
@@ -23,7 +20,25 @@ public:
 
   File(fs::path path) : fs::path(path)
   {
-    m_future = boost::async(boost::launch::async, boost::bind(computeSha, path));
+    m_future = boost::async(boost::launch::async,
+			    [path]()->Sha
+			    {
+			      using boost::uuids::detail::sha1;
+
+			      boost::iostreams::file_source is(path.string());
+			      sha1                          sha1;
+			      char                          buf[4096];
+			      std::streamsize               len;
+
+			      while ((len = is.read(buf, sizeof(buf))))
+				sha1.process_bytes(buf, len);
+			      
+			      unsigned int digest[5];
+
+			      sha1.get_digest(digest);
+
+			      return "sha";
+			    });
   }
 
   Sha sha()
