@@ -57,6 +57,7 @@ The tool outputs the files that it discovered, prefixed with one of "C", "U", or
 
 Generate our metadata with "--generate"
 ====
+**CAUTION: Running the generator will modify the filesystem.  Hidden directories (.shasummary) are created in each subdirectory being scaned to hold the SHA1 metadata**
 ```
 greg:shasummary ghaskins$ ./obj/x86_64/shasummary --generate ./obj/test/
 Using 8 threads
@@ -105,6 +106,7 @@ Note that the tool has now flagged the removed file ("D") and the updated file (
 
 Finally, re-generate the metadata
 =====
+We can update the metadata with the new state of our filesystem to serve as the reference point.
 ```
 greg:shasummary ghaskins$ ./obj/x86_64/shasummary --generate ./obj/test/
 Using 8 threads
@@ -115,3 +117,4 @@ greg:shasummary ghaskins$ ./obj/x86_64/shasummary ./obj/test/
 Using 8 threads
 Verifying sums in "./obj/test/"
 ```
+Note that the final verification step indicates that there are no outstanding changes
