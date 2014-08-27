@@ -1,6 +1,7 @@
 NAME=shasummary
 
-CFLAGS += -g --std=c++11 -DBOOST_FILESYSTEM_VERSION=3 $(EXTRA_CFLAGS)
+OPTIMIZE ?= -O3
+CFLAGS += -g $(OPTIMIZE) --std=c++11 -DBOOST_FILESYSTEM_VERSION=3 $(EXTRA_CFLAGS)
 ARCH=$(shell uname -m)
 OS:=$(shell uname)
 BINDIR ?= /usr/bin
