@@ -5,7 +5,7 @@ ARCH=$(shell uname -m)
 OS:=$(shell uname)
 BINDIR ?= /usr/bin
 OBJDIR ?= obj/$(ARCH)
-TOBJDIR ?= obj/$(ARCH)-test
+TESTDIR ?= obj/test
 
 ifeq ($(OS),Darwin)
 BOOST_POSTFIX=-mt
@@ -20,6 +20,13 @@ SRCS += $(wildcard *.cc)
 HDRS += $(wildcard *.hh)
 
 OBJS = $(patsubst %.cc,$(OBJDIR)/%.o,$(notdir $(SRCS)))
+
+TESTFILE += foo1.dat
+TESTFILE += foo2.dat
+TESTFILE += foo3.dat
+TESTFILE += foo4.dat
+
+TESTOBJS = $(patsubst %.dat,$(TESTDIR)/%.dat,$(TESTFILE))
 
 OUTPUT = $(OBJDIR)/$(NAME)
 
@@ -39,11 +46,18 @@ $(OBJDIR)/%:
 	@mkdir -p $(OBJDIR)
 	$(CXX) $(CFLAGS) $(INCLUDES) -o $@ $(filter %.o %.a,$+) $(LIBDIR) $(LIBRARIES)
 
+$(TESTDIR)/%.dat: Makefile
+	@echo "Compiling (C++) $< to $@"
+	@mkdir -p $(TESTDIR)
+	uuidgen > $@
+
 $(PREFIX)$(BINDIR):
 	mkdir -p $@
 
 install: $(OUTPUT) $(PREFIX)$(BINDIR)
 	cp $(OUTPUT) $(PREFIX)$(BINDIR)
+
+testdata: $(TESTOBJS)
 
 clean: 
 	-rm -rf obj
