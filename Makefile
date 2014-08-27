@@ -1,4 +1,4 @@
-NAME=verisum
+NAME=shasummary
 
 CFLAGS += -g --std=c++11 -DBOOST_FILESYSTEM_VERSION=3 $(EXTRA_CFLAGS)
 ARCH=$(shell uname -m)

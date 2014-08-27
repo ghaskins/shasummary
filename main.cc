@@ -130,7 +130,7 @@ private:
   Future m_future;
 };
 
-#define METADIR ".verisum"
+#define METADIR ".shasummary"
 
 Sha loadSha(fs::path path)
 {
@@ -201,7 +201,7 @@ public:
 	    fs::path p(entry.path());
 	    
 	    if (files.find(p.filename().string()) == files.end())
-	      std::cout << "D\t" <<  *iter << std::endl;
+	      std::cout << "D\t" <<  fs::path(p.parent_path().parent_path() / p.filename()) << std::endl;
 	  }
       }
 
@@ -244,7 +244,7 @@ public:
 	
 	if (files.find(p.filename().string()) == files.end())
 	  {
-	    std::cout << "D\t" <<  *iter << std::endl;
+	    std::cout << "D\t" <<  fs::path(p.parent_path().parent_path() / p.filename()) << std::endl;
 	    fs::remove(p);
 	  }
       }
