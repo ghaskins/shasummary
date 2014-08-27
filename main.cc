@@ -52,13 +52,17 @@ private:
   {
     while (1)
       {
-	Lock lock(m_mutex);
-	
-	while(m_tasks.empty())
-	  m_condition.wait(lock);
+	TaskPtr task;
 
-	TaskPtr task(m_tasks.front());
-	m_tasks.pop();
+	{
+	  Lock lock(m_mutex);
+	  
+	  while(m_tasks.empty())
+	    m_condition.wait(lock);
+
+	  task = m_tasks.front();
+	  m_tasks.pop();
+	}
 
 	(*task)();
       }
