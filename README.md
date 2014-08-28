@@ -2,8 +2,7 @@ shasummary - A filesystem integrity validation tool
 =
 
 This tool allows you to monitor the integrity of a filesystem based on SHA1 sums. Think of it as a way to manage
-_shasum_ recursively and across many files at once.  This involves the generation and persistence of the SHA1
-information and the monitoring/reporting of changes detected via SHA1 comparison.
+[shasum](http://linux.die.net/man/1/shasum) recursively and across many files at once.  This involves the generation and persistence of the SHA1 information and the monitoring/reporting of changes detected via SHA1 comparison.
 
 The tool is designed to operate in two modes: _generation_ and _verification_:
 - **Generation mode:** recurses through a specified file hierarchy while computing SHA1 metadata and emitting it into a hidden sub-directory in each subdirectory discovered.
