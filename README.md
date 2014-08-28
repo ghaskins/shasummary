@@ -14,13 +14,6 @@ Dependencies
 ==
 Building the software requires [boost](http://boost.org), a [c++11](http://en.wikipedia.org/wiki/C%2B%2B11) compliant C++ compiler (tested with gcc v4.8 on both OSX and OmniOS), and standard peripherial unix build tools like make.
 
-Usage
-==
-```
-shasummary [--generate] [--threads=#] [$path]
-```
-The default is to run a verify operation from the $CWD.
-
 Building
 ===
 ```
@@ -30,6 +23,12 @@ c++ -g --std=c++11 -DBOOST_FILESYSTEM_VERSION=3   -c -o obj/x86_64/main.o main.c
 Linking obj/x86_64/shasummary
 c++ -g --std=c++11 -DBOOST_FILESYSTEM_VERSION=3   -o obj/x86_64/shasummary obj/x86_64/main.o  -lboost_program_options-mt -lboost_filesystem-mt -lboost_system-mt -lboost_thread-mt
 ```
+Usage
+==
+```
+shasummary [--generate] [--threads=#] [$path]
+```
+The default is to run a verify operation from the $CWD.
 
 Example
 ===
