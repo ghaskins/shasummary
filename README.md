@@ -5,11 +5,9 @@ This tool allows you to monitor the integrity of a filesystem based on SHA1 sums
 _shasum_ recursively and across many files at once.  This involves the generation and persistence of the SHA1
 information and the monitoring/reporting of changes detected via SHA1 comparison.
 
-The tool is designed to operate in two modes: _generation_ and _verification_.  Generation mode recurses through
-a specified file hierarchy while computing SHA1 metadata and emitting it into a hidden sub-directory in each
-subdirectory discovered.  Verification mode will recompute the SHA1 for each file discovered and use it as a
-comparison against any previously stored SHA1 values.  Any differences in the filesystem between the stored
-metadata and computed value will result in a report (files added, removed, or changed) since the last update.  
+The tool is designed to operate in two modes: _generation_ and _verification_:
+- **Generation mode:** recurses through a specified file hierarchy while computing SHA1 metadata and emitting it into a hidden sub-directory in each subdirectory discovered.
+- **Verification mode:** will recompute the SHA1 for each file discovered and use it as a comparison against any previously stored SHA1 values.  Any differences in the filesystem between the stored metadata and computed value will result in a report (files added, removed, or changed) since the last update.  
 
 The metadata is stored in standard files within standard (albeit hidden) subdirectories, providing
 compatibility with standard tools like rsync or tar.  This is particularly helpful for ensuring that a
