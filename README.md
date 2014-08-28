@@ -11,7 +11,7 @@ The tool is designed to operate in two modes: _generation_ and _verification_:
 
 The metadata is stored in standard files within standard (albeit hidden) subdirectories, providing
 compatibility with standard tools like rsync or tar.  This is particularly helpful for ensuring that a
-filesystem backup remains coherent over time since the backup can be verified at any time independently from
+filesystem backup remains coherent over time since the backup can be verified independently from
 the state of the source filesystem.
 
 Usage
