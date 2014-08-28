@@ -10,8 +10,16 @@ The tool is designed to operate in two modes: _generation_ and _verification_:
 
 The metadata is stored in standard files within standard (albeit hidden) sub-directories (.shasummary).  Because they are basic filesystem objects, they will naturally be carried alongside your real data using standard tools like cp, rsync or tar without any special considerations.  This is particularly helpful for ensuring that a filesystem backup remains coherent over time since the backup can be verified independently from the state of the source filesystem.
 
+Dependencies
+==
+Building the software requires [boost](http://boost.org), a [c++11](http://en.wikipedia.org/wiki/C%2B%2B11) compliant C++ compiler (tested with gcc v4.8 on both OSX and OmniOS), and standard peripherial unix build tools like make.
+
 Usage
 ==
+```
+shasummary [--generate] [--threads=#] [$path]
+```
+The default is to run a verify operation from the $CWD.
 
 Building
 ===
