@@ -1,15 +1,18 @@
 shasummary - A filesystem integrity validation tool
 =
 
-This tool allows you to monitor the integrity of a filesystem based on SHA1 sums.  It is designed to operate in
-two modes: generation and verification.  Generation mode will emit SHA1 metadata into a hidden sub-directory.
-Verification mode will check the current state of the filesystem with respect to the previously generated
-metadata and report on any differences (files added, removed, or changed) since the last update.
+This tool allows you to monitor the integrity of a filesystem based on SHA1 sums. Think of it as a way to manage
+[shasum](http://linux.die.net/man/1/shasum) recursively and across many files at once.  This involves the generation and persistence of the SHA1 information and the monitoring/reporting of changes detected via SHA1 comparison.
 
-This is particularly helpful for ensuring that a filesystem backup remains coherent over time.
+The tool is designed to operate in two modes: _generation_ and _verification_:
+- **Generation mode:** recurses through a specified file hierarchy while computing SHA1 metadata and emitting it into a hidden sub-directory in each directory discovered.
+- **Verification mode:** will recompute the SHA1 for each file discovered and use it as a comparison against any previously stored SHA1 values.  Any differences in the filesystem between the stored metadata and computed value will result in a report (files added, removed, or changed) since the last update.  
 
-Usage
+The metadata is stored in standard files within standard (albeit hidden) sub-directories (.shasummary).  Because they are basic filesystem objects, they will naturally be carried alongside your real data using standard tools like cp, rsync or tar without any special considerations.  This is particularly helpful for ensuring that a filesystem backup remains coherent over time since the backup can be verified independently from the state of the source filesystem.
+
+Dependencies
 ==
+Building the software requires [boost](http://boost.org), a [c++11](http://en.wikipedia.org/wiki/C%2B%2B11) compliant C++ compiler (tested with gcc v4.8 on both OSX and OmniOS), and standard peripherial unix build tools like make.
 
 Building
 ===
@@ -20,10 +23,16 @@ c++ -g --std=c++11 -DBOOST_FILESYSTEM_VERSION=3   -c -o obj/x86_64/main.o main.c
 Linking obj/x86_64/shasummary
 c++ -g --std=c++11 -DBOOST_FILESYSTEM_VERSION=3   -o obj/x86_64/shasummary obj/x86_64/main.o  -lboost_program_options-mt -lboost_filesystem-mt -lboost_system-mt -lboost_thread-mt
 ```
+Usage
+==
+```
+shasummary [--generate] [--threads=#] [$path]
+```
+The default is to run a verify operation from the $CWD.
 
 Example
 ===
-In this example, we will use the built-in "make testdata" facility to generate some test files to play around with
+In this example, we will use the built-in "make testdata" facility to generate some test files to play around with.
 
 Generate the Test Data
 ====
@@ -46,8 +55,7 @@ Run the verifier on the baseline filesystem
 ====
 ```
 greg:shasummary ghaskins$ ./obj/x86_64/shasummary ./obj/test/
-Using 8 threads
-Verifying sums in "./obj/test/"
+Verifying sums in "./obj/test/" using 8 threads
 C       "./obj/test/foo1.dat"
 C       "./obj/test/foo2.dat"
 C       "./obj/test/foo3.dat"
@@ -60,8 +68,7 @@ Generate our metadata with "--generate"
 **CAUTION: Running the generator will modify the filesystem.  Hidden directories (.shasummary) are created in each subdirectory being scanned to hold the SHA1 metadata**
 ```
 greg:shasummary ghaskins$ ./obj/x86_64/shasummary --generate ./obj/test/
-Using 8 threads
-Generating sums in "./obj/test/"
+Generating sums in "./obj/test/" using 8 threads
 C       "./obj/test/foo1.dat"
 C       "./obj/test/foo2.dat"
 C       "./obj/test/foo3.dat"
@@ -70,10 +77,10 @@ C       "./obj/test/foo4.dat"
 We can observe that this results in the same report as before.  The difference is that the state of the filesystem was recorded such that future iterations will be based on the state of our current snapshot, as we can see below.
 ```
 greg:shasummary ghaskins$ ./obj/x86_64/shasummary ./obj/test/
-Using 8 threads
-Verifying sums in "./obj/test/"
+Verifying sums in "./obj/test/" using 8 threads
+greg:shasummary ghaskins$
 ```
-Note that the tool did not report any differences.  We have verified that the filesytem is in the same state as it was when the metadata was generated.
+Note that the tool did not report any differences because it is now in the same state as it was when the metadata was generated.
 
 Make some artificial changes
 ====
@@ -83,8 +90,7 @@ First, delete a file
 ```
 greg:shasummary ghaskins$ rm ./obj/test/foo1.dat 
 greg:shasummary ghaskins$ ./obj/x86_64/shasummary ./obj/test/
-Using 8 threads
-Verifying sums in "./obj/test/"
+Verifying sums in "./obj/test/" using 8 threads
 D       "./obj/test/foo1.dat"
 ```
 Note that the deleted file is flagged as "D".
@@ -94,8 +100,7 @@ Next, change an existing file
 ```
 greg:shasummary ghaskins$ uuidgen > ./obj/test/foo2.dat 
 greg:shasummary ghaskins$ ./obj/x86_64/shasummary ./obj/test/
-Using 8 threads
-Verifying sums in "./obj/test/"
+Verifying sums in "./obj/test/" using 8 threads
 U       "./obj/test/foo2.dat"
 D       "./obj/test/foo1.dat"
 ```
@@ -106,12 +111,11 @@ Finally, re-generate the metadata
 We can update the metadata with the new state of our filesystem to serve as the reference point.
 ```
 greg:shasummary ghaskins$ ./obj/x86_64/shasummary --generate ./obj/test/
-Using 8 threads
-Generating sums in "./obj/test/"
+Generating sums in "./obj/test/" using 8 threads
 U       "./obj/test/foo2.dat"
 D       "./obj/test/foo1.dat"
 greg:shasummary ghaskins$ ./obj/x86_64/shasummary ./obj/test/
-Using 8 threads
-Verifying sums in "./obj/test/"
+Verifying sums in "./obj/test/" using 8 threads
+greg:shasummary ghaskins$
 ```
 Note that the final verification step indicates that there are no outstanding changes
