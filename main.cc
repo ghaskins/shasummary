@@ -144,7 +144,7 @@ void store_sha(fs::path path, const Sha &sha)
 {
   std::ofstream os(path.string().c_str());
 
-  os << sha;
+  os << sha << std::endl;
 }
 
 class Directory
@@ -169,6 +169,14 @@ public:
       }
   }
 
+  fs::path compute_metafile(fs::path metadir, fs::path filename)
+  {
+    fs::path metafile = metadir / filename;
+    metafile += ".sha";
+
+    return metafile;
+  }
+
   void verify()
   {
     fs::path metadir(m_path / METADIR);
@@ -176,7 +184,7 @@ public:
 
     for (auto iter : m_files)
       {
-	fs::path metafile(metadir / iter->filename());
+	fs::path metafile(compute_metafile(metadir, iter->filename()));
 	Sha sha(iter->sha());
 
 	if (fs::exists(metafile))
@@ -199,8 +207,8 @@ public:
 	    fs::directory_entry entry(*iter);
 	    fs::path p(entry.path());
 	    
-	    if (files.find(p.filename().string()) == files.end())
-	      std::cout << "D\t" <<  fs::path(p.parent_path().parent_path() / p.filename()) << std::endl;
+	    if (files.find(p.stem().string()) == files.end())
+	      std::cout << "D\t" <<  fs::path(p.parent_path().parent_path() / p.stem()) << std::endl;
 	  }
       }
 
@@ -217,7 +225,7 @@ public:
 
     for (auto iter : m_files)
       {
-	fs::path metafile(metadir / iter->filename());
+	fs::path metafile(compute_metafile(metadir, iter->filename()));
 
 	if (fs::exists(metafile))
 	  {
@@ -241,9 +249,9 @@ public:
 	fs::directory_entry entry(*iter);
 	fs::path p(entry.path());
 	
-	if (files.find(p.filename().string()) == files.end())
+	if (files.find(p.stem().string()) == files.end())
 	  {
-	    std::cout << "D\t" <<  fs::path(p.parent_path().parent_path() / p.filename()) << std::endl;
+	    std::cout << "D\t" <<  fs::path(p.parent_path().parent_path() / p.stem()) << std::endl;
 	    fs::remove(p);
 	  }
       }
